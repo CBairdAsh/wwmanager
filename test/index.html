@@ -1,0 +1,165 @@
+<html lang="en-US"><head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Worker Manager</title>
+<style>
+
+.zone {
+	width: 45vw; 
+	position:absolute; 
+}
+.zone_left {
+	left:0;
+}
+.zone_right {
+	right:0;
+}
+.zone_parent {
+	position: relative;
+}
+.pad_top {
+	padding-top: 1em;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<p>
+Web Worker Manager
+</p>
+<p>
+This is to demonstrate the Web Worker Manager in use. <br>
+
+</p>
+<h3>Test Set</h3>
+<div class="zone_parent">
+	<div id="tests" class="zone zone_left">
+
+		<hr>
+		<p>
+		Basic web worker test - single worker
+		</p>
+		<div>
+			<input id="message_1" type="text" value='' />
+		</div>
+		<div>
+			<button id="test_1" onclick="single_worker()">Run Single Worker</button>
+		</div>
+
+		<hr>
+		<p>
+		Set Timeout webworker
+		</p>
+		<div>
+			Wait how long ( in milliseconds )? <input id="timer" type="text" value='' />
+		</div>		
+		<div>
+			<button id="test_2" onclick="timeout_worker()">Run Set Timeout</button>
+		</div>
+		
+		<hr>
+		<p>
+		Timer webworker
+		</p>	
+		<div>
+			<button id="test_3" onclick="timer_worker()">Run Timer</button>
+		</div>
+		
+		<hr>
+		<p>
+		Run All
+		</p>	
+		<div>
+			<button id="test_4" onclick="run_all()">Activate All of the Above</button>
+		</div>		
+		
+	</div>
+	<div id="out" class="zone zone_right">
+
+	</div>
+<div>
+<script>
+
+function single_worker() {
+	$.fn.wwmanager(function(e) {
+		console.log('[in worker] Message received from main script',e.data);
+		var workerResult = 'Result: ' + e.data.msg;
+		console.log('[in workr] Posting message back to main script',workerResult);
+		self.postMessage(workerResult);
+	},'single_worker', {
+		"msg": $('#message_1').val(),
+		"fn": {
+			"success": function(resp,e) {
+				$('#out').append('<hr><div class="pad_top"> success with single_worker script! '+resp+'</div><hr><br>');				
+			},
+			"failure": function(resp,e) {
+				$('#out').append('<hr><div class="pad_top"> fail with single_worker script! '+resp+'</div><hr><br>');
+			}
+		}
+	});
+
+}
+
+function timeout_worker() {
+	$.fn.wwmanager(function(e) {
+		var _wait = parseInt(e.data.wait,10);
+		console.log('starting wait @ '+new Date());
+		
+		setTimeout(function() {
+			console.log('ending wait @ '+new Date());
+			self.postMessage('finish');
+		},_wait);
+		
+	},'timeout', {
+		"wait": parseInt($('#timer').val(),10),
+		"fn": {
+			"success": function(resp,e) {
+				$('#out').append('<hr><div class="pad_top"> success with timeout_worker script! '+resp+'</div>');				
+			}
+		}		
+	});
+
+}
+
+function timer_worker() {
+	$.fn.wwmanager(function(e) {
+		var _max = parseInt(e.data.max,10);
+		var _timer = {
+			counter: 0,
+			tick: function() {
+				if ( _timer.counter < _max ) {
+					_timer.counter++;
+					self.postMessage({"data": _timer.counter, "cmd":"wait"});
+					setTimeout(function() {
+						_timer.tick();
+					}, parseInt(e.data.interval,10) );						
+				}
+			}
+		}
+		_timer.tick();
+		
+	},'counter', {
+		"max": 10,
+		"interval": 1000,
+		"fn": { 
+			"success": function(resp,e) {
+				$('#out').append('<hr><div class="pad_top"> success with timer_worker script! Count is : '+resp+'</div></hr><br>');
+			}}
+	});
+
+}
+
+function run_all() {
+	timer_worker();
+	single_worker();
+	timeout_worker();
+}
+
+</script>
+<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="../src/wwmanager.min.js"></script>
+</body></html>
