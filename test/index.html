@@ -6,8 +6,8 @@
 <style>
 
 .zone {
-	width: 45vw; 
-	position:absolute; 
+	width: 45vw;
+	position:absolute;
 }
 .zone_left {
 	left:0;
@@ -56,27 +56,27 @@ This is to demonstrate the Web Worker Manager in use. <br>
 		</p>
 		<div>
 			Wait how long ( in milliseconds )? <input id="timer" type="text" value='' />
-		</div>		
+		</div>
 		<div>
 			<button id="test_2" onclick="timeout_worker()">Run Set Timeout</button>
 		</div>
-		
+
 		<hr>
 		<p>
 		Timer webworker
-		</p>	
+		</p>
 		<div>
 			<button id="test_3" onclick="timer_worker()">Run Timer</button>
 		</div>
-		
+
 		<hr>
 		<p>
 		Run All
-		</p>	
+		</p>
 		<div>
 			<button id="test_4" onclick="run_all()">Activate All of the Above</button>
-		</div>		
-		
+		</div>
+
 	</div>
 	<div id="out" class="zone zone_right">
 
@@ -94,7 +94,7 @@ function single_worker() {
 		"msg": $('#message_1').val(),
 		"fn": {
 			"success": function(resp,e) {
-				$('#out').append('<hr><div class="pad_top"> success with single_worker script! '+resp+'</div><hr><br>');				
+				$('#out').append('<hr><div class="pad_top"> success with single_worker script! '+resp+'</div><hr><br>');
 			},
 			"failure": function(resp,e) {
 				$('#out').append('<hr><div class="pad_top"> fail with single_worker script! '+resp+'</div><hr><br>');
@@ -108,19 +108,19 @@ function timeout_worker() {
 	$.fn.wwmanager(function(e) {
 		var _wait = parseInt(e.data.wait,10);
 		console.log('starting wait @ '+new Date());
-		
+
 		setTimeout(function() {
 			console.log('ending wait @ '+new Date());
 			self.postMessage('finish');
 		},_wait);
-		
+
 	},'timeout', {
 		"wait": parseInt($('#timer').val(),10),
 		"fn": {
 			"success": function(resp,e) {
-				$('#out').append('<hr><div class="pad_top"> success with timeout_worker script! '+resp+'</div>');				
+				$('#out').append('<hr><div class="pad_top"> success with timeout_worker script! '+resp+'</div>');
 			}
-		}		
+		}
 	});
 
 }
@@ -136,16 +136,16 @@ function timer_worker() {
 					self.postMessage({"data": _timer.counter, "cmd":"wait"});
 					setTimeout(function() {
 						_timer.tick();
-					}, parseInt(e.data.interval,10) );						
+					}, parseInt(e.data.interval,10) );
 				}
 			}
 		}
 		_timer.tick();
-		
+
 	},'counter', {
 		"max": 10,
 		"interval": 1000,
-		"fn": { 
+		"fn": {
 			"success": function(resp,e) {
 				$('#out').append('<hr><div class="pad_top"> success with timer_worker script! Count is : '+resp+'</div></hr><br>');
 			}}
@@ -161,5 +161,5 @@ function run_all() {
 
 </script>
 <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
-<script type="text/javascript" src="../src/wwmanager.min.js"></script>
+<script type="text/javascript" src="../src/wwmanager.js"></script>
 </body></html>

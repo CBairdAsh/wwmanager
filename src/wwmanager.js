@@ -182,18 +182,18 @@ Repo: https://github.com/CBairdAsh/wwmanager
 			}
 			return false;
 		},
-    chk_cmds: function(_source) {
+    chk_cmds: function(_source, _trigger) {
       var _found = false;
       var _mx_cmds = methods.cmds;
       for ( var i=0; i < _mx_cmds; i++) {
-          if ( methods.cmds[i] == _source ) {
+          if ( ( _source == _trigger ) && ( methods.cmds[i] == _source ) ) {
             _found = true;
             break;
           }
       }
       return _found;
     },
-		proc_fn: function(_evt) {
+		proc_fn: function(_evt, _wait) {
 			try {
 				var _glob = $.wwmanager;
 				var _worker = _evt.currentTarget;
@@ -205,9 +205,7 @@ Repo: https://github.com/CBairdAsh/wwmanager
 
 						// data is response, but in case of a command, check for a sub 'data'
 						var _response = _evt.data;
-						var _splice = true;
-
-						var _splice = ( methods.chk_cmds(methods.get_cmd(_response) ) ) ? false : true;
+						var _splice = (!_wait);
 
 						if (! _splice ) {
 							// replace structure with what is in data for return, if there is a data branch
@@ -302,11 +300,16 @@ Repo: https://github.com/CBairdAsh/wwmanager
 					console.log('[wwmanager.methods.worker '+_key+'] details ... ',e);
 				}
 
-				var _spin = ( methods.chk_cmds(methods.get_cmd(e.data) ) ) ? false : true;
+        var _wait = ( methods.chk_cmds(methods.get_cmd(e.data), 'wait') ) ? false : true;
 
-				methods.proc_fn(e);
+        // check for stop, stop doesn't execute the thread but just shuts it all down
+        var _stop = ( methods.chk_cmds(methods.get_cmd(e.data), 'stop') ) ? true : false;
 
-				if ( _spin ) {
+        if ( _stop == false ) {
+          methods.proc_fn(e, _wait);
+        }
+
+				if ( ( _wait == false ) || _stop ) {
 					// mark as available for reuse or destruction
 					e.currentTarget.available = true;
 
