@@ -207,7 +207,7 @@ Repo: https://github.com/CBairdAsh/wwmanager
 						var _response = _evt.data;
 						var _splice = true;
 
-						var _splice = ( methods.chk_cmds(methods.get_cmd(_response) ) ? false : true;
+						var _splice = ( methods.chk_cmds(methods.get_cmd(_response) ) ) ? false : true;
 
 						if (! _splice ) {
 							// replace structure with what is in data for return, if there is a data branch
@@ -302,7 +302,7 @@ Repo: https://github.com/CBairdAsh/wwmanager
 					console.log('[wwmanager.methods.worker '+_key+'] details ... ',e);
 				}
 
-				var _spin = ( methods.chk_cmds(methods.get_cmd(e.data) ) ? false : true;
+				var _spin = ( methods.chk_cmds(methods.get_cmd(e.data) ) ) ? false : true;
 
 				methods.proc_fn(e);
 
