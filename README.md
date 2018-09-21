@@ -5,6 +5,15 @@ Web Worker Manager is a small component that manages the creation of inline web 
 
 #### Browser Support
 
+The web worker manager is intended for browsers that support web workers ...
+
+Google Chrome
+Mac OS Safari
+iOS Safari
+IE 11
+MS Edge
+Firefox
+Samsung Internet
 
 #### Dependencies
 
