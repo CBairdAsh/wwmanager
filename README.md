@@ -25,16 +25,22 @@ Just place before your closing <body> tag, add:
 
 <script type="text/javascript" src="src/wwmanager.js"></script>
 
+
 Once loaded, wwmanager will attach itself to the currently loaded instance of jQuery and be available for use.
 
 The wwmanager's syntax is as follows:
 
 $.fn.wwmanager(
   inline script to be turned into a Blob web worker,
+
   unique identifier that can be used to identify the worker'
+
   [,parameters that will be passed to the worker to operate against]
+
   [,function if worker is successful]
+
   [,function if worker is unsuccessful]
+  
   );
 
 Here is a very simple example:
