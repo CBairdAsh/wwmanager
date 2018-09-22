@@ -1,0 +1,29 @@
+{
+  "name": "wwmanager",
+  "version": "1.0.4",
+  "description": "Web Worker Manager - a manager to create and oversee web workers",
+  "main": "wwmanager/src/wwmanager.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CBairdAsh/wwmanager.git"
+  },
+  "keywords": [
+    "js",
+    "web worker",
+    "worker",
+    "javascript",
+    "thread manager"
+  ],
+  "author": "C. B. Ash <cb.ash@highlandcitadel.com>",
+  "contributors": [
+    {
+      "name": "C. B. Ash",
+      "email": "cb.ash@highlandcitadel.com",
+      "url": "https://github.com/CBairdAsh/"
+    }
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "jquery": ">=1.8.0"
+  }
+}
