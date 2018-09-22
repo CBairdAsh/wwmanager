@@ -3,7 +3,7 @@ Web Worker Manager - a manager to create and oversee web workers
 
 Web Worker Manager is a small component that manages the creation of inline web workers with respect to what a given browser on a device can handle. It also monitors each web worker, reusing workers as needed or terminating them when they are idle and no longer needed.
 
-#### Browser Support
+### Browser Support
 
 The web worker manager is intended for browsers that support web workers ...
 
@@ -15,35 +15,56 @@ The web worker manager is intended for browsers that support web workers ...
 - Firefox
 - Samsung Internet
 
-#### Dependencies
+### Dependencies
 
 wwmanager has been tested on jQuery 3.3.1 but should work with jQuery 2.1 and 1.7
 
-#### How to use
+### How to use
 
 Just place before your closing <body> tag, add:
 
-'''html
+```html
 <script type="text/javascript" src="src/wwmanager.js"></script>
-'''
+```
 
 Once loaded, wwmanager will attach itself to the currently loaded instance of jQuery and be available for use.
 
-The wwmanager's syntax is as follows:
+##### Syntax
 
-'''javascript
+```javascript
 $.fn.wwmanager(
-  inline script to be turned into a Blob web worker,
-  unique identifier that can be used to identify the worker'
-  [,parameters that will be passed to the worker to operate against]
-  [,function if worker is successful]
-  [,function if worker is unsuccessful]
-  );
-'''
+  workerFunction,
+  uniqueWorkerID
+  [,parametersForWorker]
+  [,successFunction]
+  [,failureFunction]
+);
+```
 
-Here is a very simple example:
+#### workerFunction
 
-'''javascript
+This is the function that is turned into a web worker. Right now, this is an inline function as seen in the tests and examples.
+
+#### uniqueWorkerID
+
+Each worker must have a unique identifier. This can be anything but it's recommended to make this something recognizable for development purposes.
+
+#### parametersForWorker
+
+If the worker needs data to function, it is passed through here. This is an object of the data the worker needs.
+
+#### successFunction
+
+This is a function to capture the successful results of the web worker
+
+#### failureFunction
+
+This is the function to capture the result if the web worker fails.
+
+
+##### Example
+
+```javascript
 $.fn.wwmanager(function(e) {
     // this is the inline worker to be created
     var worker_output = 'The worker heard: ' + e.data.msg;
@@ -57,10 +78,10 @@ $.fn.wwmanager(function(e) {
   function(resp,e) {
       $('#out').append('<hr><div> fail with single_worker script! '+resp+'</div><hr><br>');
   });
-'''
+```
 
 
-#### License
+### License
 
 Copyright (c) 2018 C. B. Ash
 
