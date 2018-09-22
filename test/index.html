@@ -85,21 +85,22 @@ This is to demonstrate the Web Worker Manager in use. <br>
 <script>
 
 function single_worker() {
+
 	$.fn.wwmanager(function(e) {
 		console.log('[in worker] Message received from main script',e.data);
 		var workerResult = 'Result: ' + e.data.msg;
 		console.log('[in workr] Posting message back to main script',workerResult);
 		self.postMessage(workerResult);
-	},'single_worker', {
-		"msg": $('#message_1').val(),
-		"fn": {
-			"success": function(resp,e) {
+	},
+	'single_worker',
+	{
+		"msg": $('#message_1').val()
+	},
+	function(resp,e) {
 				$('#out').append('<hr><div class="pad_top"> success with single_worker script! '+resp+'</div><hr><br>');
-			},
-			"failure": function(resp,e) {
+	},
+	function(resp,e) {
 				$('#out').append('<hr><div class="pad_top"> fail with single_worker script! '+resp+'</div><hr><br>');
-			}
-		}
 	});
 
 }
@@ -114,13 +115,13 @@ function timeout_worker() {
 			self.postMessage('finish');
 		},_wait);
 
-	},'timeout', {
-		"wait": parseInt($('#timer').val(),10),
-		"fn": {
-			"success": function(resp,e) {
+	},
+	'timeout',
+	{
+		"wait": parseInt($('#timer').val(),10)
+	},
+	function(resp,e) {
 				$('#out').append('<hr><div class="pad_top"> success with timeout_worker script! '+resp+'</div>');
-			}
-		}
 	});
 
 }
@@ -142,13 +143,14 @@ function timer_worker() {
 		}
 		_timer.tick();
 
-	},'counter', {
+	},
+	'counter',
+	{
 		"max": 10,
-		"interval": 1000,
-		"fn": {
-			"success": function(resp,e) {
+		"interval": 1000
+	},
+	function(resp,e) {
 				$('#out').append('<hr><div class="pad_top"> success with timer_worker script! Count is : '+resp+'</div></hr><br>');
-			}}
 	});
 
 }

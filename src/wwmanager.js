@@ -3,7 +3,7 @@ wwmanager
 
 Web Worker Manager
 
-Version 1.01
+Version 1.04
 Created: 9/18/2018
 Author: Chris Ash
 Repo: https://github.com/CBairdAsh/wwmanager
@@ -46,7 +46,7 @@ Repo: https://github.com/CBairdAsh/wwmanager
 					API = _out.API;
 				}
 				// kick off launch
-				methods.startup(_param,_args[0],_args[1]);
+				methods.startup(_param,_args[0],_args[1],_args[2],_args[3]);
 			}
 		}
 	});
@@ -62,8 +62,8 @@ Repo: https://github.com/CBairdAsh/wwmanager
 
 	var methods = {
     cmds: ['wait','stop'],
-		startup: function(_fnc, _w_type, _fnc_param) {
-			methods.spin_up(_fnc, _w_type, _fnc_param);
+		startup: function(_fnc, _w_type, _param, _success, _failure) {
+			methods.spin_up(_fnc, _w_type, _param,_success,_failure);
 		},
 		id_counter: 0,
 		newID: function() {
@@ -231,42 +231,37 @@ Repo: https://github.com/CBairdAsh/wwmanager
 				console.log('[wwmanager.methods.proc_fn] last attempted to process ',_evt);
 			}
 		},
-		spin_up: function(_fnc, _w_type, _fnc_param) {
+		spin_up: function(_fnc, _w_type, _param, _success, _failure) {
 			/*
-				_fnc_param is the object that is passed to the inline worker function.
-
 				99% of the parameters are whatever are assigned as they are expected to match with what the inline worker is looking for.
 			*/
 			var _glob = $.wwmanager;
 
-			if ( _fnc_param ) {
-				_fnc_param.active = false;
-				_fnc_param.wk_type = _w_type;
+      var _success_stub = function(resp,e) {
+        if ( e.currentTarget.nomsg == false ) console.log('[wwmanager.success] resp',resp);
+      }
+      var _fail_stub = function(resp,e) {
+        if ( e.currentTarget.nomsg == false ) console.log('[wwmanager.failure] resp',resp);
+      }
+      if ( _success ) {
+        _success_stub = _success;
+      }
+      if ( _failure ) {
+        _fail_stub = _failure;
+      }
 
-				var _success_stub = function(resp,e) {
-					if ( e.currentTarget.nomsg == false ) console.log('[wwmanager.success] resp',resp);
-				}
-				var _fail_stub = function(resp,e) {
-					if ( e.currentTarget.nomsg == false ) console.log('[wwmanager.failure] resp',resp);
-				}
+      if ( _param ) {
+        _param.active = false;
+        _param.wk_type = _w_type;
+        _param.uid = methods.newID();
 
-				if ( _fnc_param.hasOwnProperty('fn') ) {
-					if ( ! _fnc_param.fn.success )
-						_fnc_param.fn.success = _success_stub;
+        _param.fn = {
+          "success": _success_stub,
+          "failure": _fail_stub
+        }
 
-					if ( ! _fnc_param.fn.failure )
-						_fnc_param.fn.failure = _fail_stub;
-				} else {
-					_fnc_param.fn = {
-						"success": _success_stub,
-						"failure": _fail_stub
-					}
-				}
-
-				_fnc_param.uid = methods.newID();
-
-				_glob.queue.push(_fnc_param);
-			}
+        _glob.queue.push(_param);
+      }
 
 			//add to work pool
 			if ( _fnc ) {
@@ -276,14 +271,18 @@ Repo: https://github.com/CBairdAsh/wwmanager
 				});
 			}
 
-			// spin up workers if need be
-			methods.chk_make_thread();
+      if ( ( _fnc || _param ) && _w_type ) {
+        // spin up workers if need be
+  			methods.chk_make_thread();
 
-			// run through queue
-			methods.chk_queue();
+  			// run through queue
+  			methods.chk_queue();
 
-			// start monitor to watch for system idle so threads can be cleared
-			methods.terminate.start();
+  			// start monitor to watch for system idle so threads can be cleared
+  			methods.terminate.start();
+      } else {
+        console.log('[wwmanager.spin_up] no inline worker or param specified, nothing to do.');
+      }
 		},
 		chk_make_thread: function() {
 			var _glob = $.wwmanager;
