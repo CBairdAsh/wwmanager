@@ -23,28 +23,27 @@ wwmanager has been tested on jQuery 3.3.1 but should work with jQuery 2.1 and 1.
 
 Just place before your closing <body> tag, add:
 
+'''html
 <script type="text/javascript" src="src/wwmanager.js"></script>
-
+'''
 
 Once loaded, wwmanager will attach itself to the currently loaded instance of jQuery and be available for use.
 
 The wwmanager's syntax is as follows:
 
+'''javascript
 $.fn.wwmanager(
   inline script to be turned into a Blob web worker,
-
   unique identifier that can be used to identify the worker'
-
   [,parameters that will be passed to the worker to operate against]
-
   [,function if worker is successful]
-
   [,function if worker is unsuccessful]
-  
   );
+'''
 
 Here is a very simple example:
 
+'''javascript
 $.fn.wwmanager(function(e) {
     // this is the inline worker to be created
     var worker_output = 'The worker heard: ' + e.data.msg;
@@ -58,8 +57,7 @@ $.fn.wwmanager(function(e) {
   function(resp,e) {
       $('#out').append('<hr><div> fail with single_worker script! '+resp+'</div><hr><br>');
   });
-
-
+'''
 
 
 #### License
