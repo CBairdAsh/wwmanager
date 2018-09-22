@@ -43,22 +43,27 @@ $.fn.wwmanager(
 
 #### workerFunction
 
+###### Type: Function
 This is the function that is turned into a web worker. Right now, this is an inline function as seen in the tests and examples.
 
 #### uniqueWorkerID
 
+###### Type: String or Number
 Each worker must have a unique identifier. This can be anything but it's recommended to make this something recognizable for development purposes.
 
 #### parametersForWorker
 
+###### Type: Object
 If the worker needs data to function, it is passed through here. This is an object of the data the worker needs.
 
 #### successFunction
 
+###### Type: Function
 This is a function to capture the successful results of the web worker
 
 #### failureFunction
 
+###### Type: Function
 This is the function to capture the result if the web worker fails.
 
 
