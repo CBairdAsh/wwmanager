@@ -158,19 +158,13 @@ Repo: https://github.com/CBairdAsh/wwmanager
 						break;
 					}
 				}
-
-				if ( ( _glob.queue.length == 0 ) && ( _glob.pool.length == 0 ) ) {
-					var _watch = this.watch;
-					clearInterval(_watch);
-					_watch = false;
-				}
 			},
 			watch: false,
 			start: function() {
 				if ( this.watch == false ) {
 					this.watch = setInterval(function() {
 						methods.terminate.chk();
-					},50);
+					},100);
 				}
 			}
 		},
@@ -226,6 +220,9 @@ Repo: https://github.com/CBairdAsh/wwmanager
 						break;
 					}
 				}
+
+        // run through queue
+  			methods.chk_queue();        
 			} catch (err) {
 				console.log('[wwmanager.methods.proc_fn] error ',err);
 				console.log('[wwmanager.methods.proc_fn] last attempted to process ',_evt);
